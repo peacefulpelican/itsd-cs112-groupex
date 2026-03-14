@@ -7,7 +7,7 @@ public class BookRecord implements DisplayableRecord {
     private int year;
 
     public BookRecord(String title, String author, int year) {
-        if (title == null || title.isEmpty()) {
+        if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be empty.");
         }
         if (author == null || author.isBlank()) {
