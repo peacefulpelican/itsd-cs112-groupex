@@ -69,13 +69,21 @@ public class Main {
         System.out.print("Enter Book Author: ");
         String author = scanner.nextLine();
         System.out.print("Enter Book Year: ");
-        int year = scanner.nextInt();
+        int year;
+        try {
+            year = scanner.nextInt();
+            scanner.nextLine();
+        }
+        catch (InputMismatchException e) {
+            System.out.println("Enter a valid year");
+            scanner.nextLine();
+            return;
+        }
         try {
             rm.addRecord(new BookRecord(title, author, year));
-            System.out.println("Book added successfully.");
         }
         catch (IllegalArgumentException e) {
-            System.err.println("Unable to add book. Please try again.");
+            System.err.println("Unable to add book: " + e.getMessage());
         }
     }
 

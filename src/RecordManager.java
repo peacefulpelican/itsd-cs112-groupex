@@ -12,7 +12,7 @@ public class RecordManager {
         else if (records.contains(record)) throw new IllegalArgumentException("Record already exists");
         else {
             records.add(record);
-
+            System.out.println("Record with ID" + record.getId() + " added successfullyDo yo.");
         }
     }
 
@@ -38,6 +38,6 @@ public class RecordManager {
     }
 
     public void displayAllRecords() {
-        records.forEach(System.out::println);
+        records.forEach(DisplayableRecord::getDisplayText);
     }
 }

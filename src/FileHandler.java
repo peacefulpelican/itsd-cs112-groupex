@@ -47,7 +47,7 @@ public class FileHandler {
             for (DisplayableRecord record : records) {
                 bf.write(record.toString());
                 bf.newLine();
-                System.out.println("Reccord saved to " + readableFileName);
+                System.out.println("Record saved to " + readableFileName);
             }
         }
         catch (IOException e) {
