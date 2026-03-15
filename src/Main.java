@@ -1,25 +1,20 @@
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    private static final String FILENAME = "records.ser";
-    private Scanner scanner;
-    private RecordManager rm;
-    private FileHandler fh;
 
-    public Main() {
-        scanner = new Scanner(System.in);
-        rm = new RecordManager();
-        fh = new FileHandler(FILENAME);
-    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        RecordManager rm = new RecordManager();
+        FileHandler fh = new FileHandler("");
 
-    public void start() {
         boolean quit = false;
         while (!quit) {
             displayMenu();
             int choice = getChoice(scanner);
             if (choice == -1) continue;
-            if (execAction(choice, scanner, rm, fh)) quit = true;
+            quit = execAction(choice, scanner, rm, fh);
         }
     }
 
@@ -33,79 +28,75 @@ public class Main {
     }
 
     private static int getChoice(Scanner scanner) {
-        int choice;
-        System.out.println("Enter Choice (1 - 5)");
+        System.out.print("Enter choice (1 - 5): ");
         try {
-            choice = scanner.nextInt();
+            int choice = scanner.nextInt();
             scanner.nextLine();
-        }
-        catch (InputMismatchException e) {
-            System.err.println("Please enter a valid option number");
+            if (choice < 1 || choice > 5) {
+                System.out.println("Invalid choice. Enter a choice corresponding to a menu item.");
+                return -1;
+            }
+            return choice;
+        } catch (InputMismatchException e) {
+            System.err.println("Please enter a valid option number.");
             scanner.nextLine();
             return -1;
         }
-        if  (choice < 1 || choice > 5) {
-            System.out.println("Invalid choice. Enter a choice corresponding to a menu item,");
-            return -1;
-        }
-        return choice;
     }
 
-    private boolean execAction(int choice, Scanner scanner, RecordManager rm, FileHandler fh) {
-        boolean quit = false;
+    private static boolean execAction(int choice, Scanner scanner, RecordManager rm, FileHandler fh) {
         switch (choice) {
             case 1 -> addBook(scanner, rm);
             case 2 -> displayBooks(rm);
-            case 3 -> saveRecords(rm, fh);
-            case 4 -> loadRecords(rm, fh);
-            case 5 -> quit = true;
+            case 3 -> saveRecords(scanner, rm, fh);
+            case 4 -> loadRecords(scanner, rm, fh);
+            case 5 -> { return true; }
         }
-        return quit;
+        return false;
     }
 
-    private void addBook(Scanner scanner, RecordManager rm)   {
-        System.out.print("Enter Book Title: ");
+    private static void addBook(Scanner scanner, RecordManager rm) {
+        System.out.print("Enter title: ");
         String title = scanner.nextLine();
-        System.out.print("Enter Book Author: ");
+        System.out.print("Enter author: ");
         String author = scanner.nextLine();
-        System.out.print("Enter Book Year: ");
-        int year;
+        System.out.print("Enter year: ");
         try {
-            year = scanner.nextInt();
+            int year = scanner.nextInt();
             scanner.nextLine();
-        }
-        catch (InputMismatchException e) {
-            System.out.println("Enter a valid year");
+            BookRecord book = new BookRecord(title, author, year);
+            rm.addRecord(book);
+            System.out.println("Record with ID " + book.getId() + " added successfully.");
+        } catch (InputMismatchException e) {
+            System.err.println("Invalid year. Please enter a number.");
             scanner.nextLine();
-            return;
-        }
-        try {
-            rm.addRecord(new BookRecord(title, author, year));
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.err.println("Unable to add book: " + e.getMessage());
         }
     }
 
-    private void displayBooks(RecordManager rm) {
+    private static void displayBooks(RecordManager rm) {
         rm.displayAllRecords();
     }
 
-    private void saveRecords(RecordManager rm, FileHandler fh) {
+    private static void saveRecords(Scanner scanner, RecordManager rm, FileHandler fh) {
+        System.out.print("Enter filename to save to: ");
+        String fileName = scanner.nextLine();
+        fh.setFileName(fileName);
         fh.saveRecords(rm.getAllRecords());
     }
 
-    private void loadRecords(RecordManager rm, FileHandler fh) {
-        try {
-            rm.setRecords(fh.loadRecords());
+    private static void loadRecords(Scanner scanner, RecordManager rm, FileHandler fh) {
+        System.out.print("Enter filename to load from: ");
+        String fileName = scanner.nextLine();
+        fh.setFileName(fileName);
+        ArrayList<DisplayableRecord> records = fh.loadRecords();
+        if (records != null) {
+            try {
+                rm.setRecords(records);
+            } catch (IllegalArgumentException e) {
+                System.err.println("Unable to load records: " + e.getMessage());
+            }
         }
-        catch (IllegalArgumentException e) {
-            System.err.println("Unable to load records. Please try again.");
-        }
-    }
-
-    public static void main(String[] args) {
-        Main m = new Main();
-        m.start();
     }
 }
