@@ -10,7 +10,10 @@ public class RecordManager {
     public void addRecord(DisplayableRecord record) {
         if (record == null) throw new IllegalArgumentException("Record cannot be null.");
         else if (records.contains(record)) throw new IllegalArgumentException("Record already exists");
-        else records.add(record);
+        else {
+            records.add(record);
+
+        }
     }
 
     public boolean removeRecord(String id) {

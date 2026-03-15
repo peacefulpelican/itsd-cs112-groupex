@@ -29,6 +29,7 @@ public class FileHandler {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public ArrayList<DisplayableRecord> loadRecords() {
         try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(Path.of(fileName)))) {
             System.out.println("Records loaded.");
@@ -46,6 +47,7 @@ public class FileHandler {
             for (DisplayableRecord record : records) {
                 bf.write(record.toString());
                 bf.newLine();
+                System.out.println("Reccord saved to " + readableFileName);
             }
         }
         catch (IOException e) {

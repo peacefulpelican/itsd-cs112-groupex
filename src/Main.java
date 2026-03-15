@@ -37,6 +37,7 @@ public class Main {
         System.out.println("Enter Choice (1 - 5)");
         try {
             choice = scanner.nextInt();
+            scanner.nextLine();
         }
         catch (InputMismatchException e) {
             System.err.println("Please enter a valid option number");
@@ -87,7 +88,12 @@ public class Main {
     }
 
     private void loadRecords(RecordManager rm, FileHandler fh) {
-        rm.setRecords(fh.loadRecords());
+        try {
+            rm.setRecords(fh.loadRecords());
+        }
+        catch (IllegalArgumentException e) {
+            System.err.println("Unable to load records. Please try again.");
+        }
     }
 
     public static void main(String[] args) {
