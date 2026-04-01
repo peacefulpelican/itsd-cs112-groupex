@@ -73,7 +73,6 @@ public class RecordManagerTest {
         try {
             recordManager.addRecord(book1);
             recordManager.displayAllRecords();
-            
             // Restore original System.out
             System.setOut(originalOut);
             

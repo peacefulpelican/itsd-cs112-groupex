@@ -2,8 +2,16 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Main {
+/**
+ * Basic book records application.
+ * Provides a menu-driven console interface for manging simple book records.
+ */
 
+public class Main {
+    /**
+     * Entry point. Initialised components and run the menu until the user chooses to exit.
+     * @param args (not used)
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         RecordManager recordManager = new RecordManager();
@@ -18,6 +26,9 @@ public class Main {
         }
     }
 
+    /**
+     * Prints the main menu options to standard output.
+     */
     private static void displayMenu() {
         System.out.println("Book Records Menu:");
         System.out.println("1. Add Book");
@@ -27,6 +38,11 @@ public class Main {
         System.out.println("5. Exit");
     }
 
+    /**
+     * Prompts the user for a menu selection and validates input
+     * @param scanner scanner to read from standard input
+     * @return validated menu choice (1-5) or -1 if input is invalid or out of range.
+     * */
     private static int getChoice(Scanner scanner) {
         System.out.print("Enter choice (1 - 5): ");
         try {
@@ -44,6 +60,14 @@ public class Main {
         }
     }
 
+    /**
+     * Actions the appropriate method depending on user's selected menu choice.
+     * @param choice the validated menu choice
+     * @param scanner scanner to read from standard input
+     * @param recordManager the RecordManager object holding the current recordset
+     * @param fileHandler FileHandler object to handle file I/O for saving or restoring records
+     * @return true if user has selected exit (5), false otherwise
+     */
     private static boolean execAction(int choice, Scanner scanner, RecordManager recordManager, FileHandler fileHandler) {
         switch (choice) {
             case 1 -> addBook(scanner, recordManager);
@@ -55,6 +79,11 @@ public class Main {
         return false;
     }
 
+    /**
+     * Collects book details from user and adds a new BookRecord to the record manager.
+     * @param scanner scanner to read from standard input
+     * @param recordManager current records set
+     */
     private static void addBook(Scanner scanner, RecordManager recordManager) {
         System.out.print("Enter title: ");
         String title = scanner.nextLine();
@@ -63,7 +92,7 @@ public class Main {
         System.out.print("Enter year: ");
         try {
             int year = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine(); // absorb with trailing newline since scanner is reused elsewhere
             BookRecord book = new BookRecord(title, author, year);
             recordManager.addRecord(book);
             System.out.println("Record with ID " + book.getId() + " added successfully.");
@@ -75,17 +104,33 @@ public class Main {
         }
     }
 
+    /**
+     * Calls on RecordManager.displayAllRecords to print currently held book records.
+     * @param recordManager current records set
+     */
     private static void displayBooks(RecordManager recordManager) {
         recordManager.displayAllRecords();
     }
 
-    private static void saveRecords(Scanner scanner, RecordManager rm, FileHandler fh) {
+    /**
+     * Prompts user for a file name and saves all current records to that file
+     * @param scanner scanner to read from standard input
+     * @param recordManager current record set (RecordManager object)
+     * @param fileHandler FileHander object to handle I/O operations.
+     */
+    private static void saveRecords(Scanner scanner, RecordManager recordManager, FileHandler fileHandler) {
         System.out.print("Enter filename to save to: ");
         String fileName = scanner.nextLine();
-        fh.setFileName(fileName);
-        fh.saveRecords(rm.getAllRecords());
+        fileHandler.setFileName(fileName);
+        fileHandler.saveRecords(recordManager.getAllRecords());
     }
 
+    /**
+     * Prompts user for a file name, loads records from that file and replaces the current record set.
+     * @param scanner scanner to read from standard input.
+     * @param recordManager
+     * @param fileHandler
+     */
     private static void loadRecords(Scanner scanner, RecordManager recordManager, FileHandler fileHandler) {
         System.out.print("Enter filename to load from: ");
         String fileName = scanner.nextLine();

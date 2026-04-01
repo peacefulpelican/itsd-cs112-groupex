@@ -1,10 +1,15 @@
 import java.util.ArrayList;
 
+/**
+ * Manages a collection of DisplayableRecord objects
+ */
+
 public class RecordManager {
+
     private ArrayList<DisplayableRecord> records;
 
     public RecordManager() {
-        records = new ArrayList<>();
+        this.records = new ArrayList<>();
     }
 
     public void addRecord(DisplayableRecord record) {
@@ -18,17 +23,28 @@ public class RecordManager {
 
     public boolean removeRecord(String id) {
         if (id == null || id.isBlank()) return false;
-        return records.removeIf(r -> id.equals(r.getId()));
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getId().equals(id)) {
+                records.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public ArrayList<DisplayableRecord> getAllRecords() { return new ArrayList<>(records); }
+    public ArrayList<DisplayableRecord> getAllRecords() {
+        return new ArrayList<>(records);
+    }
 
     public DisplayableRecord findRecordById(String id) {
         if (id == null || id.isBlank()) return null;
-        return records.stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        for (DisplayableRecord record : records) {
+            if (record.getId().equals(id)) {
+                return record;
+            }
+        }
+
+        return null;
     }
 
     public void setRecords(ArrayList<DisplayableRecord> records) {
@@ -38,6 +54,8 @@ public class RecordManager {
     }
 
     public void displayAllRecords() {
-        records.forEach(DisplayableRecord::getDisplayText);
+        for (DisplayableRecord record : records) {
+            record.getDisplayText();
+        }
     }
 }
